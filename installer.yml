@@ -26,7 +26,7 @@ provides: []
 
 # What the project has to offer before this library works.
 requires:
-  installer: 1.8.0    # the first that puts install.defines in the project
+  installer: 1.9.0    # the first that reads installer.yml
   libraries: []
   hal: false          # plain C, it reaches the chip only through lfs_config
   cmsis: false
@@ -35,8 +35,10 @@ requires:
   peripherals: []     # the flash driver that fills in lfs_config has them
   c_standard: c99
 
-# The code sits at the top of the repository and lands at the top of the
-# library's folder.
+# The code sits at the top of the repository, where littlefs keeps it, and
+# each file says where it lands: in src/, as in every NimaLTD library, with
+# the licence and the README around it. Moving the files here instead would
+# make every release of theirs conflict.
 #
 # littlefs reads its settings from the header LFS_DEFINES names, and only when
 # the compiler is given the define. The installer gives it to the whole
@@ -51,12 +53,17 @@ install:
 # test and tooling code, and would not build in an STM32 project.
 files:
   headers:
-    - lfs.h           # listed first: the one "#include" is printed for
-    - lfs_util.h
-    - lfs_defines.h   # replaced on install, its USER CODE section kept
+    - from: lfs.h           # listed first: the one "#include" is printed for
+      to: src/lfs.h
+    - from: lfs_util.h
+      to: src/lfs_util.h
+    - from: lfs_defines.h   # replaced on install, its USER CODE section kept
+      to: src/lfs_defines.h
   sources:
-    - lfs.c
-    - lfs_util.c
+    - from: lfs.c
+      to: src/lfs.c
+    - from: lfs_util.c
+      to: src/lfs_util.c
 
 # Copied as they are, alongside the code. LICENSE.md carries their copyright,
 # which the BSD license says must stay with the code.

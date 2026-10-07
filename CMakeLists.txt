@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.16)
 #   add_subdirectory(littlefs)
 #   target_link_libraries(${CMAKE_PROJECT_NAME} nimaltd::littlefs)
 #
-# The version is written once, in library.yml, so there is none here to forget
+# The version is written once, in installer.yml, so there is none here to forget
 # when the fork is synced.
 
 project(littlefs
