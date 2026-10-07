@@ -1,0 +1,65 @@
+# Read by stm32-installer. See https://github.com/nimaltd/stm32-installer
+#
+# This repository is a fork of littlefs-project/littlefs. Their files are never
+# edited here: this file, CMakeLists.txt and lfs_defines.h are the only ones
+# added, so every new release of theirs merges in with no conflict.
+#
+# lfs.h carries its version only as LFS_VERSION, with no @version tag for the
+# installer to read, so it is written here instead. Keep it equal to the
+# release the fork is synced to.
+
+name: littlefs
+version: 2.11.3
+description: A little fail-safe file system for microcontrollers
+repository: https://github.com/nimaltd/littlefs
+license: BSD-3-Clause
+
+# What this library is.
+# kind:     driver, middleware, rtos, protocol, filesystem, utility, bsp
+# category: sensor, storage, display, communication, wireless, rtos, timing,
+#           power, input, math, system
+kind: filesystem
+category: storage
+
+# Capabilities this library gives other libraries. An RTOS would say [rtos].
+provides: []
+
+# What the project has to offer before this library works.
+requires:
+  installer: 1.8.0    # the first that puts install.defines in the project
+  libraries: []
+  hal: false          # plain C, it reaches the chip only through lfs_config
+  cmsis: false
+  rtos: optional      # with threads, build it with LFS_THREADSAFE
+  hal_modules: []
+  peripherals: []     # the flash driver that fills in lfs_config has them
+  c_standard: c99
+
+# The code sits at the top of the repository and lands at the top of the
+# library's folder.
+#
+# littlefs reads its settings from the header LFS_DEFINES names, and only when
+# the compiler is given the define. The installer gives it to the whole
+# project, not only to lfs.c: LFS_THREADSAFE adds two members to struct
+# lfs_config, and every file using it has to agree on where the rest sit.
+install:
+  layout: flat
+  defines:
+    - LFS_DEFINES=lfs_defines.h
+
+# Only the file system itself. bd/, runners/, tests/ and scripts/ are their
+# test and tooling code, and would not build in an STM32 project.
+files:
+  headers:
+    - lfs.h           # listed first: the one "#include" is printed for
+    - lfs_util.h
+    - lfs_defines.h   # replaced on install, its USER CODE section kept
+  sources:
+    - lfs.c
+    - lfs_util.c
+
+# Copied as they are, alongside the code. LICENSE.md carries their copyright,
+# which the BSD license says must stay with the code.
+extras:
+  - LICENSE.md
+  - README.md
