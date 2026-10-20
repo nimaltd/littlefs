@@ -26,7 +26,7 @@ provides: []
 
 # What the project has to offer before this library works.
 requires:
-  installer: 1.9.0    # the first that reads installer.yml
+  installer: 2.1.0    # every file at its own path; an older installer stops
   libraries: []
   hal: false          # plain C, it reaches the chip only through lfs_config
   cmsis: false
@@ -45,25 +45,27 @@ requires:
 # project, not only to lfs.c: LFS_THREADSAFE adds two members to struct
 # lfs_config, and every file using it has to agree on where the rest sit.
 install:
-  layout: flat
   defines:
     - LFS_DEFINES=lfs_defines.h
 
+# Written for 2.1.0: a file keeps the path it has here unless a to gives it
+# another place in the library's folder, as each one below does: lfs.h, at
+# the top here, lands in src/. headers and sources need no files around them.
+#
 # Only the file system itself. bd/, runners/, tests/ and scripts/ are their
 # test and tooling code, and would not build in an STM32 project.
-files:
-  headers:
-    - from: lfs.h           # listed first: the one "#include" is printed for
-      to: src/lfs.h
-    - from: lfs_util.h
-      to: src/lfs_util.h
-    - from: lfs_defines.h   # replaced on install, its USER CODE section kept
-      to: src/lfs_defines.h
-  sources:
-    - from: lfs.c
-      to: src/lfs.c
-    - from: lfs_util.c
-      to: src/lfs_util.c
+headers:
+  - from: lfs.h           # listed first: the one "#include" is printed for
+    to: src/lfs.h
+  - from: lfs_util.h
+    to: src/lfs_util.h
+  - from: lfs_defines.h   # replaced on install, its USER CODE section kept
+    to: src/lfs_defines.h
+sources:
+  - from: lfs.c
+    to: src/lfs.c
+  - from: lfs_util.c
+    to: src/lfs_util.c
 
 # Copied as they are, alongside the code. LICENSE.md carries their copyright,
 # which the BSD license says must stay with the code.
