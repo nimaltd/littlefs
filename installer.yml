@@ -29,7 +29,7 @@ provides: []
 
 # What the project has to offer before this library works.
 requires:
-  lib_installer: 3.0.0 # the oldest lib-installer that reads this file
+  lib_installer: 4.0.0 # the oldest lib-installer that reads this file
   libraries: []
   hal: false          # plain C, it reaches the chip only through lfs_config
   cmsis: false
